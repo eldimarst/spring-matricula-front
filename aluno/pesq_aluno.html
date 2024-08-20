@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escola</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+        .navbar, .footer {
+            background-color: #f0e5de;
+        }
+        .form-container {
+            background-color: #f0e5de;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        #alerta {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <!-- <script src="/js/jquery.mask-1.14.15.min.js}"></script> -->
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        // Exibe o alerta
+        function exibirAlerta(mensagem) {
+            $('#alerta').text(mensagem).fadeIn();
+            setTimeout(function() {
+                $('#alerta').fadeOut();
+            }, 3000); // Desaparece após 3 segundos (3000 ms)
+        }
+
+        $(document).ready(function() {
+            $('#searchBtn').click(function() {
+                const nome = $('#nome').val();
+                const cpf = $('#cpf').val();
+
+                $("#resultsTable").html("<tr><td colspan='5'>Aguarde...</td></tr>");
+
+                $.ajax({
+                    url: 'http://localhost:8080/api/alunos',
+                    method: 'GET',
+                    data: { nome, cpf },
+                    success: function(data) {
+                        $('#resultsTable').empty();
+                        data.forEach(function(aluno) {
+                            $('#resultsTable').append(`
+                                <tr class="highlight">
+                                    <td>${aluno.codAluno}</td>
+                                    <td>${aluno.cpf}</td>
+                                    <td>${aluno.nome}</td>
+                                    <td>${aluno.dataNasc}</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm">Alterar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    },
+                    error: function(xhr) {
+                        exibirAlerta('Erro: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            $('#addBtn').click(function() {
+                // Lógica para incluir um novo aluno
+            });
+
+            $('#clearBtn').click(function() {
+                $('#searchForm')[0].reset();
+                $('#resultsTable').empty();
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- Navbar fixa -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/aluno/cadastro/abrir">Cadastrar Aluno</a>
+                        <a class="dropdown-item" href="#">Ação 2</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="container">
+
+        <!-- Area de exibição das msg de erro -->
+        <div style="height: 70px; border: 1px solid #fff">
+            <div id="alerta" >
+                <span id="msgErro" text="${errorMessage}"></span>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <h2>Pesquisa de Alunos</h2>
+            <form id="searchForm">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nome">Nome</label>
+                        <input type="text" class="form-control" id="nome" name="nome">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="cpf">CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="searchBtn">Pesquisar</button>
+                <button type="button" class="btn btn-secondary" id="clearBtn">Limpar</button>
+                <button type="button" class="btn btn-success" id="addBtn">Incluir</button>
+            </form>
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>CPF</th>
+                        <th>Nome</th>
+                        <th>Nascimento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTable">
+                    <!-- Resultados serão inseridos aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Rodapé fixo -->
+    <footer class="footer fixed-bottom text-center">
+        <div class="container">
+            <span class="text-muted">Informações sobre o autor</span>
+        </div>
+    </footer>
+
+</body>
+</html>
