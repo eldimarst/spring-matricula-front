@@ -43,30 +43,11 @@
             }, 3000); // Desaparece após 3 segundos (3000 ms)
         }
 
-        // Quando o botão for clicado
-        function openModal(codAluno) {
-            $.ajax({
-                url: 'http://localhost:8080/api/alunos/obter',
-                method: 'GET',
-                data: { codAluno },
-                success: function(data) {
-                    $("#modalNome").val(data.nome);
-                    $("#modalCpf").val(data.cpf);
-                    $("#modalDataNasc").val(data.dataNasc);
-                    $("#modalCep").val(data.cep);
-                    $("#modalLogradouro").val(data.logradouro);
-                    $("#modalNumero").val(data.numero);
-                    $("#modalBairro").val(data.bairro);
-                    $("#modalCidade").val(data.cidade);
-                    $("#modalUf").val(data.uf);
-                },
-                error: function(xhr) {
-                    exibirAlerta('Erro: ' + xhr.responseText);
-                }
-            });
-
-            // Exiba a janela modal
-            $("#myModal").modal("show");
+        function excluirRegistro() {
+            // Lógica para excluir o registro
+            // ...
+            // Depois de excluir, atualize a tabela ou faça outras ações necessárias
+            $('#confirmModal').modal('hide'); // Fecha o modal de confirmação
         }
 
         $(document).ready(function() {
@@ -82,8 +63,7 @@
                     data: { nome, cpf },
                     success: function(data) {
                         $('#resultsTable').empty();
-                        data.forEach(function(aluno, index) {
-                            const uniqueId = `updateBtn${index + 1}`;
+                        data.forEach(function(aluno) {
                             $('#resultsTable').append(`
                                 <tr class="highlight">
                                     <td>${aluno.codAluno}</td>
@@ -91,15 +71,11 @@
                                     <td>${aluno.nome}</td>
                                     <td>${aluno.dataNasc}</td>
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm" id="${uniqueId}">Alterar</button>
-                                        <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+                                        <button class="btn btn-warning btn-sm">Alterar</button>
+                                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal">Excluir</button>
                                     </td>
                                 </tr>
                             `);
-
-                            $(`#${uniqueId}`).click(function() {
-                                openModal(aluno.codAluno);
-                            });
                         });
                     },
                     error: function(xhr) {
@@ -111,7 +87,6 @@
 
             $('#addBtn').click(function() {
                 // Lógica para incluir um novo aluno
-                alert("botão incluir");
             });
 
             $('#clearBtn').click(function() {
@@ -189,57 +164,21 @@
         </div>
     </div>
 
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Alterar Aluno</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <!-- Area do formulário -->
                 <div class="modal-body">
-                    <form >
-                        <div class="form-group">
-                            <label for="nome">Nome</label>
-                            <input type="text" class="form-control" id="modalNome"  required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cpf">CPF</label>
-                            <input type="text" class="form-control" id="modalCpf"  required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dataNasc">Nascimento</label>
-                            <input type="date" class="form-control" id="modalDataNasc" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cep">CEP</label>
-                            <input type="text" class="form-control" id="modalCep" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="logradouro">Logradouro</label>
-                            <input type="text" class="form-control" id="modalLogradouro" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="numero">Número</label>
-                            <input type="text" class="form-control" id="modalNumero">
-                        </div>
-                        <div class="form-group">
-                            <label for="bairro">Bairro</label>
-                            <input type="text" class="form-control" id="modalBairro" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="cidade">Cidade</label>
-                            <input type="text" class="form-control"  id="modalCidade" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="uf">UF</label>
-                            <input type="text" class="form-control"  id="modalUf" readonly>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    </form>
+                    Tem certeza de que deseja excluir este registro?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="excluirRegistro()">Confirmar</button>
                 </div>
             </div>
         </div>
