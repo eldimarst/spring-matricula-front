@@ -40,33 +40,10 @@
             $('#alerta').text(mensagem).fadeIn();
             setTimeout(function() {
                 $('#alerta').fadeOut();
-            }, 5000); // Desaparece após 5 segundos (5000 ms)
+            }, 3000); // Desaparece após 3 segundos (3000 ms)
         }
-
-        function excluirRegistro(codigo) {
-            alert("Excluir: "+codigo);
-            // Lógica para excluir o registro
-            // ...
-            // Depois de excluir, atualize a tabela ou faça outras ações necessárias
-            $('#confirmDelModal').modal('hide'); // Fecha o modal de confirmação
-        }
-
 
         $(document).ready(function() {
-            $('#confirmDelModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget); // Botão que acionou a modal
-                var itemCodi = button.data('codigo'); // Extrai o valor do atributo data-codigo
-                var itemNome = button.data('nome'); // Extrai o valor do atributo data-codigo
-                var modal = $(this);
-                modal.find('#itemNome').text(itemNome); // Atualiza o conteúdo da modal
-                modal.find('#confirmDelButton').data('codigoDel', itemCodi); // Define o valor de itemCodi no botão de confirmação
-            });
-
-            $('#confirmDelButton').on('click', function () {
-                var codigo = $(this).data('codigoDel'); // Obtém o valor de itemCodi
-                excluirRegistro(codigo); // Chama a função com o valor de itemCodi
-            });
-
             $('#searchBtn').click(function() {
                 const nome = $('#nome').val();
                 const cpf = $('#cpf').val();
@@ -80,15 +57,21 @@
                     success: function(data) {
                         $('#resultsTable').empty();
                         data.forEach(function(aluno) {
+                            let dataNasc = new Date(aluno.dataNasc).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            });
+
                             $('#resultsTable').append(`
                                 <tr class="highlight">
                                     <td>${aluno.codAluno}</td>
                                     <td>${aluno.cpf}</td>
                                     <td>${aluno.nome}</td>
-                                    <td>${aluno.dataNasc}</td>
+                                    <td>${dataNasc}</td>
                                     <td>
                                         <button class="btn btn-warning btn-sm">Alterar</button>
-                                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDelModal" data-nome="${aluno.nome}" data-codigo="${aluno.codAluno}">Excluir</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
                             `);
@@ -177,26 +160,6 @@
                     <!-- Resultados serão inseridos aqui -->
                 </tbody>
             </table>
-        </div>
-    </div>
-
-    <div class="modal fade" id="confirmDelModal" tabindex="-1" role="dialog" aria-labelledby="confirmDelModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDelModalLabel">Confirmação</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Tem certeza de que deseja excluir aluno(a) <span id="itemNome"></span>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelButton">Confirmar</button>
-                </div>
-            </div>
         </div>
     </div>
 

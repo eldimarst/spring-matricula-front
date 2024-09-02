@@ -83,13 +83,19 @@
                     success: function(data) {
                         $('#resultsTable').empty();
                         data.forEach(function(aluno, index) {
+                            let dataNasc = new Date(aluno.dataNasc).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            });
+
                             const uniqueId = `updateBtn${index + 1}`;
                             $('#resultsTable').append(`
                                 <tr class="highlight">
                                     <td>${aluno.codAluno}</td>
                                     <td>${aluno.cpf}</td>
                                     <td>${aluno.nome}</td>
-                                    <td>${aluno.dataNasc}</td>
+                                    <td>${dataNasc}</td>
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm" id="${uniqueId}">Alterar</button>
                                         <button type="button" class="btn btn-danger btn-sm">Excluir</button>
