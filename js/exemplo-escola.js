@@ -50,6 +50,8 @@ async function excluirRegistro(codigo) {
 
 
 $(document).ready(function() {
+
+    //Ao carregar a modal de confirmação da exclusão
     $('#confirmDelModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Botão que acionou a modal
         var itemCodi = button.data('codigo'); // Extrai o valor do atributo data-codigo
@@ -59,11 +61,13 @@ $(document).ready(function() {
         modal.find('#confirmDelButton').data('codigoDel', itemCodi); // Define o valor de itemCodi no botão de confirmação
     });
 
+    //Ao clicar no botão de confirmação da exclusão dentro da Modal
     $('#confirmDelButton').on('click', function () {
         var codigo = $(this).data('codigoDel'); // Obtém o valor de itemCodi
         excluirRegistro(codigo); // Chama a função com o valor de itemCodi
     });
 
+    //Ao clicar no botão de pesquisar alunos
     $('#searchBtn').click(function() {
         const nome = $('#nome').val();
         const cpf = $('#cpf').val();
