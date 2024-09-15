@@ -73,6 +73,8 @@ function openModalAlterar(codAluno) {
         }
         return response.json();
     }).then(data => {
+        $('#formCadastro')[0].reset();
+
         $("#modalCodAluno").val(data.codAluno);
         $("#modalNome").val(data.nome);
         $("#modalCpf").val(data.cpf);
@@ -90,8 +92,6 @@ function openModalAlterar(codAluno) {
     }).catch(error => {
         exibirAlerta(error.message);
     });
-
-    
 }
 
 $(document).ready(function() {
@@ -231,12 +231,13 @@ $(document).ready(function() {
 
     /////////////////////////////////////Ao clicar no botão de incluir novo aluno
     $('#addBtn').click(function() {
-        // Lógica para incluir um novo aluno
+        $("#formCadastro")[0].reset(); //limpa formulário
+        $("#insertUpdateModal").modal("show");
     });
 
     /////////////////////////////////////Ao clicar no botão limpar pesquisa
     $('#clearBtn').click(function() {
-        $('#searchForm')[0].reset();
+        $('#searchForm')[0].reset(); //limpa formulário
         $('#resultsTable').empty();
     });
 
